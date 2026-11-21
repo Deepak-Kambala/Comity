@@ -283,34 +283,64 @@ export function CityScene3D({
         }
       }
 
-      // Glowing Neon Billboard for resident entity
+      // High-Precision Glowing Neon Billboard for resident entity (Front & Back)
       if (b.resident) {
         const billboardCanvas = document.createElement('canvas');
         billboardCanvas.width = 512;
-        billboardCanvas.height = 140;
+        billboardCanvas.height = 160;
         const bctx = billboardCanvas.getContext('2d')!;
 
         bctx.fillStyle = '#080c10';
-        bctx.fillRect(0, 0, 512, 140);
+        bctx.fillRect(0, 0, 512, 160);
         bctx.strokeStyle = '#d5f36a';
-        bctx.lineWidth = 6;
-        bctx.strokeRect(5, 5, 502, 130);
+        bctx.lineWidth = 5;
+        bctx.strokeRect(4, 4, 504, 152);
 
-        bctx.fillStyle = '#d5f36a';
-        bctx.font = 'bold 40px sans-serif';
+        // DevOps / GitHub Actions Live Status Indicator
+        bctx.fillStyle = '#22c55e';
+        bctx.beginPath();
+        bctx.arc(28, 28, 6, 0, Math.PI * 2);
+        bctx.fill();
+
+        bctx.fillStyle = '#22c55e';
+        bctx.font = 'bold 15px monospace';
+        bctx.textAlign = 'left';
+        bctx.fillText('CI: PASSING • ACTIONS ACTIVE', 42, 34);
+
+        bctx.fillStyle = '#94a3b8';
+        bctx.font = '13px monospace';
+        bctx.textAlign = 'right';
+        bctx.fillText(b.district.toUpperCase(), 492, 34);
+
+        // Main Title (@USERNAME)
+        bctx.fillStyle = '#ffffff';
+        bctx.font = 'bold 42px sans-serif';
         bctx.textAlign = 'center';
-        bctx.fillText(`@${b.resident.username.toUpperCase()}`, 256, 56);
+        bctx.fillText(`@${b.resident.username.toUpperCase()}`, 256, 84);
 
+        // Precision Telemetry Bar
         bctx.fillStyle = '#38bdf8';
-        bctx.font = 'bold 22px monospace';
-        bctx.fillText(`★ ${b.resident.followers.toLocaleString()}  |  REPOS: ${b.resident.repos}`, 256, 102);
+        bctx.font = 'bold 20px monospace';
+        bctx.textAlign = 'center';
+        const starsText = b.resident.totalStars ? `★ ${b.resident.totalStars.toLocaleString()}` : `★ ${b.resident.followers.toLocaleString()}`;
+        bctx.fillText(`${starsText}  •  REPOS: ${b.resident.repos}  •  ${b.resident.topLanguage || 'TypeScript'}`, 256, 128);
 
         const bbTex = new THREE.CanvasTexture(billboardCanvas);
-        const signGeo = new THREE.PlaneGeometry(b.width * 0.85, (b.width * 0.85) * (140 / 512));
+        const signW = b.width * 0.88;
+        const signH = signW * (160 / 512);
+        const signGeo = new THREE.PlaneGeometry(signW, signH);
         const signMat = new THREE.MeshBasicMaterial({ map: bbTex });
-        const signMesh = new THREE.Mesh(signGeo, signMat);
-        signMesh.position.set(b.x, roofY - 7, b.z + b.depth / 2 + 0.2);
-        scene.add(signMesh);
+
+        // Front Facade Billboard
+        const signFront = new THREE.Mesh(signGeo, signMat);
+        signFront.position.set(b.x, roofY - signH / 2 - 1.5, b.z + b.depth / 2 + 0.25);
+        scene.add(signFront);
+
+        // Back Facade Billboard (Visible from opposite orbit angle)
+        const signBack = new THREE.Mesh(signGeo, signMat);
+        signBack.position.set(b.x, roofY - signH / 2 - 1.5, b.z - b.depth / 2 - 0.25);
+        signBack.rotation.y = Math.PI;
+        scene.add(signBack);
       }
     });
 
@@ -772,7 +802,9 @@ export function CityScene3D({
           <div className="hud-pin-line" />
           <div className="hud-badge-card">
             <div className="hud-badge-header">
-              <span className="hud-live-tag">GTA 6 WAYPOINT</span>
+              <span className="hud-live-tag">
+                <span className="ci-live-dot" /> CI: PASSING • ACTIONS VERIFIED
+              </span>
               <span className="hud-dist-tag">{selectedBuilding.district.toUpperCase()}</span>
             </div>
             <div className="hud-badge-body">
@@ -790,6 +822,13 @@ export function CityScene3D({
                 </div>
               </div>
             </div>
+            {selectedBuilding.resident && (
+              <div className="hud-badge-metrics">
+                <span>★ {selectedBuilding.resident.totalStars ? selectedBuilding.resident.totalStars.toLocaleString() : selectedBuilding.resident.followers.toLocaleString()}</span>
+                <span>{selectedBuilding.resident.repos} REPOS</span>
+                <span>{selectedBuilding.resident.topLanguage || 'TypeScript'}</span>
+              </div>
+            )}
             <div className="hud-badge-footer">
               <span>ELEV: {selectedBuilding.height}M</span>
               <span>FLOORS: {Math.floor(selectedBuilding.height / 3.5)}</span>

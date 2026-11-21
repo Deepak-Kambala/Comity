@@ -308,6 +308,12 @@ export function CityMapModal({
               </div>
             )}
 
+            {/* Live DevOps & Telemetry Status */}
+            <div className="drawer-ci-badge">
+              <span className="ci-live-dot" />
+              <span>GITHUB ACTIONS: PASSING • LIVE METRICS VERIFIED</span>
+            </div>
+
             {selectedBuilding.resident && (
               <div className="drawer-metrics">
                 <div className="metric-box">

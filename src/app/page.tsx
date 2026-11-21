@@ -42,19 +42,26 @@ export default function Home() {
     setError('');
 
     try {
-      const response = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`, {
-        headers: { Accept: 'application/vnd.github+json' },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          response.status === 404
-            ? 'That GitHub username wasn’t found. Please check spelling.'
-            : 'GitHub API rate limit or error. Try again in a moment.'
-        );
+      let resData;
+      const localApiRes = await fetch(`/api/github/${encodeURIComponent(name)}`);
+      if (localApiRes.ok) {
+        resData = await localApiRes.json();
+      } else {
+        // Fallback directly to public GitHub API
+        const fallbackRes = await fetch(`https://api.github.com/users/${encodeURIComponent(name)}`, {
+          headers: { Accept: 'application/vnd.github+json' },
+        });
+        if (!fallbackRes.ok) {
+          throw new Error(
+            fallbackRes.status === 404
+              ? 'That GitHub username wasn’t found. Please check spelling.'
+              : 'GitHub API rate limit or error. Try again in a moment.'
+          );
+        }
+        resData = await fallbackRes.json();
       }
 
-      const profile: GitHubProfile = await response.json();
+      const profile: GitHubProfile = resData;
 
       // Synthesize user building or find existing
       const { userBuilding, isNewLot } = synthesizeUserBuilding(profile, cityBuildings);

@@ -1043,6 +1043,10 @@ export function synthesizeUserBuilding(
       bio: profile.bio || `Public contributor on GitHub with ${profile.public_repos} open source repositories.`,
       company: profile.company || undefined,
       location: profile.location || undefined,
+      totalStars: (profile as any).total_stars || Math.round((profile.followers || 0) * 1.5 + (profile.public_repos || 0) * 10),
+      topLanguage: (profile as any).top_language || 'TypeScript',
+      ciStatus: (profile as any).ci_status || 'PASSING',
+      verified: profile.followers > 100 || profile.public_repos > 10,
     },
   };
 

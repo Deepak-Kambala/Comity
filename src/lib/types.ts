@@ -44,6 +44,12 @@ export interface CityBuildingData {
     keyProjects?: string[];
     company?: string;
     location?: string;
+    totalStars?: number;
+    topLanguage?: string;
+    ciStatus?: string;
+    verified?: boolean;
+    daysSinceActive?: number;
+    htmlUrl?: string;
   };
 }
 
