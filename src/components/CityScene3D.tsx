@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { Plus, Minus, Crosshair } from 'lucide-react';
 import { CityBuildingData, TimeOfDay, CameraMode } from '../lib/types';
 import {
   createAsphaltTexture,
@@ -63,12 +64,12 @@ export function CityScene3D({
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // 2. Camera - Crisp 45 FOV for cinematic architectural perspective
+    // 2. Camera - Crisp 44 FOV
     const camera = new THREE.PerspectiveCamera(44, width / height, 0.5, 2500);
-    camera.position.set(220, 180, 260);
+    camera.position.set(240, 190, 270);
     cameraRef.current = camera;
 
-    // 3. High-Performance WebGL Renderer (No heavy blur passes, rock-solid 60 FPS)
+    // 3. WebGL Renderer
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: 'high-performance',
@@ -83,14 +84,18 @@ export function CityScene3D({
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 4. OrbitControls
+    // 4. OrbitControls with user-friendly scroll behavior
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.06;
     controls.maxPolarAngle = Math.PI / 2 - 0.04;
-    controls.minDistance = 25;
+    controls.minDistance = 35;
     controls.maxDistance = 800;
     controls.target.set(0, 45, 0);
+
+    // CRITICAL: Disable wheel zoom on the landing page preview to prevent scroll hijacking!
+    controls.enableZoom = isFullscreen;
+    controls.zoomSpeed = 0.6;
     controlsRef.current = controls;
 
     // 5. Ground & Road Network with Clean Wet Sheen
@@ -119,13 +124,11 @@ export function CityScene3D({
     for (let idx = -3; idx <= 4; idx++) {
       const roadOffset = idx * roadPitch + roadPitch / 2;
 
-      // North-South Avenues
       const roadNS = new THREE.Mesh(new THREE.BoxGeometry(24, 0.25, 1600), roadMat);
       roadNS.position.set(roadOffset, 0.08, 0);
       roadNS.receiveShadow = true;
       scene.add(roadNS);
 
-      // East-West Boulevards
       const roadEW = new THREE.Mesh(new THREE.BoxGeometry(24, 0.25, 1600), roadMat);
       roadEW.rotation.y = Math.PI / 2;
       roadEW.position.set(0, 0.08, roadOffset);
@@ -165,7 +168,6 @@ export function CityScene3D({
       if (b.style === 'glass_tower') texPair = techTex;
       else if (b.style === 'spire') texPair = cyberTex;
 
-      // Base Tower with emissive glowing windows
       const towerMat = new THREE.MeshStandardMaterial({
         map: texPair.diffuse,
         emissiveMap: texPair.emissive,
@@ -212,7 +214,6 @@ export function CityScene3D({
         heliMesh.position.set(b.x, roofY + 0.6, b.z);
         scene.add(heliMesh);
       } else if (b.roofStyle === 'antenna' || b.roofStyle === 'spire_crown') {
-        // High-tech Antenna Mast
         const mastH = 26 + b.height * 0.12;
         const mastGeo = new THREE.CylinderGeometry(0.3, 1.1, mastH, 8);
         const mastMat = new THREE.MeshStandardMaterial({
@@ -224,14 +225,12 @@ export function CityScene3D({
         mastMesh.position.set(b.x, roofY + mastH / 2, b.z);
         scene.add(mastMesh);
 
-        // Blinking Red Aviation Beacon (Self-Illuminated, Zero light cost)
         const beaconGeo = new THREE.SphereGeometry(1.4, 8, 8);
         const beaconMat = new THREE.MeshBasicMaterial({ color: 0xff2244 });
         const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
         beaconMesh.position.set(b.x, roofY + mastH, b.z);
         scene.add(beaconMesh);
       } else if (b.roofStyle === 'chillers') {
-        // HVAC Chiller units
         for (let k = -1; k <= 1; k += 2) {
           const chillerGeo = new THREE.BoxGeometry(5.5, 4, 8);
           const chillerMat = new THREE.MeshStandardMaterial({
@@ -245,14 +244,13 @@ export function CityScene3D({
         }
       }
 
-      // Glowing Neon Billboard for resident developer
+      // Glowing Neon Billboard for resident entity
       if (b.resident) {
         const billboardCanvas = document.createElement('canvas');
         billboardCanvas.width = 512;
         billboardCanvas.height = 140;
         const bctx = billboardCanvas.getContext('2d')!;
 
-        // Neon border & typography
         bctx.fillStyle = '#080c10';
         bctx.fillRect(0, 0, 512, 140);
         bctx.strokeStyle = '#d5f36a';
@@ -260,13 +258,13 @@ export function CityScene3D({
         bctx.strokeRect(5, 5, 502, 130);
 
         bctx.fillStyle = '#d5f36a';
-        bctx.font = 'bold 42px sans-serif';
+        bctx.font = 'bold 40px sans-serif';
         bctx.textAlign = 'center';
-        bctx.fillText(`@${b.resident.username.toUpperCase()}`, 256, 58);
+        bctx.fillText(`@${b.resident.username.toUpperCase()}`, 256, 56);
 
         bctx.fillStyle = '#38bdf8';
-        bctx.font = 'bold 24px monospace';
-        bctx.fillText(`★ ${b.resident.followers.toLocaleString()}  |  REPOS: ${b.resident.repos}`, 256, 104);
+        bctx.font = 'bold 22px monospace';
+        bctx.fillText(`★ ${b.resident.followers.toLocaleString()}  |  REPOS: ${b.resident.repos}`, 256, 102);
 
         const bbTex = new THREE.CanvasTexture(billboardCanvas);
         const signGeo = new THREE.PlaneGeometry(b.width * 0.85, (b.width * 0.85) * (140 / 512));
@@ -277,11 +275,10 @@ export function CityScene3D({
       }
     });
 
-    // 8. Dynamic GTA Traffic Simulation (Smooth moving headlights & taillights)
+    // 8. Traffic
     const carCount = 70;
     const trafficGeo = new THREE.BoxGeometry(1.6, 0.7, 3.0);
     const headlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const taillightMat = new THREE.MeshBasicMaterial({ color: 0xff2244 });
 
     const trafficMesh = new THREE.InstancedMesh(trafficGeo, headlightMat, carCount);
     trafficMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -307,12 +304,11 @@ export function CityScene3D({
     }
     trafficRef.current = { mesh: trafficMesh, data: trafficData };
 
-    // 9. Ultra-Clear Skyward Laser Beacon & Waypoint
+    // 9. Skyward Laser Beacon & Waypoint
     const beaconGroup = new THREE.Group();
     scene.add(beaconGroup);
     beaconGroupRef.current = beaconGroup;
 
-    // Laser Cylinder
     const laserGeo = new THREE.CylinderGeometry(2.0, 5.0, 700, 16, 1, true);
     const laserMat = new THREE.MeshBasicMaterial({
       color: 0xd5f36a,
@@ -325,7 +321,6 @@ export function CityScene3D({
     laserCylinder.position.y = 350;
     beaconGroup.add(laserCylinder);
 
-    // Ascending Pulse Rings
     const pulseRings: THREE.Mesh[] = [];
     for (let r = 0; r < 4; r++) {
       const ringGeo = new THREE.RingGeometry(3.5, 7.5, 32);
@@ -343,7 +338,6 @@ export function CityScene3D({
     }
     beaconRingsRef.current = pulseRings;
 
-    // Glowing Ground Target Ring
     const targetRingGeo = new THREE.RingGeometry(18, 22, 48);
     const targetRingMat = new THREE.MeshBasicMaterial({
       color: 0xd5f36a,
@@ -356,13 +350,12 @@ export function CityScene3D({
     targetRing.position.y = 0.4;
     beaconGroup.add(targetRing);
 
-    // Target Spotlight aimed at selected building
     const spot = new THREE.SpotLight(0xd5f36a, 4, 250, 0.4, 0.5, 1);
     spot.castShadow = false;
     scene.add(spot);
     spotLightRef.current = spot;
 
-    // 10. Interactive Raycaster
+    // 10. Raycasting
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -406,7 +399,7 @@ export function CityScene3D({
     };
     window.addEventListener('resize', handleResize);
 
-    // 11. Animation Loop (60 FPS Locked)
+    // 11. Animation Loop
     let animId: number;
     const clock = new THREE.Clock();
     let lastHudTime = 0;
@@ -418,10 +411,9 @@ export function CityScene3D({
       const elapsedTime = clock.getElapsedTime();
       controls.update();
 
-      // Smooth camera interpolation to target building
       if (targetCamPos.current && targetCamLookAt.current) {
-        camera.position.lerp(targetCamPos.current, 0.055);
-        controls.target.lerp(targetCamLookAt.current, 0.06);
+        camera.position.lerp(targetCamPos.current, 0.05);
+        controls.target.lerp(targetCamLookAt.current, 0.055);
 
         if (camera.position.distanceTo(targetCamPos.current) < 2) {
           targetCamPos.current = null;
@@ -429,7 +421,6 @@ export function CityScene3D({
         }
       }
 
-      // Animate Traffic Streams
       if (trafficRef.current) {
         const { mesh, data } = trafficRef.current;
         for (let i = 0; i < data.length; i++) {
@@ -454,7 +445,6 @@ export function CityScene3D({
         mesh.instanceMatrix.needsUpdate = true;
       }
 
-      // Animate Beacon
       const activeB = selectedBuildingRef.current;
       beaconGroup.visible = Boolean(activeB);
 
@@ -475,7 +465,6 @@ export function CityScene3D({
           spotLightRef.current.target.position.set(activeB.x, activeB.height * 0.5, activeB.z);
         }
 
-        // Project 2D HUD badge position
         if (elapsedTime - lastHudTime > 0.03) {
           lastHudTime = elapsedTime;
           const pinnacle = new THREE.Vector3(activeB.x, activeB.height + 12, activeB.z);
@@ -486,13 +475,11 @@ export function CityScene3D({
         }
       }
 
-      // Report coordinates for minimap
       if (onCameraUpdate) {
         const angle = Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
         onCameraUpdate({ x: camera.position.x, z: camera.position.z }, angle);
       }
 
-      // Pure Native WebGL render
       renderer.render(scene, camera);
     };
 
@@ -509,14 +496,13 @@ export function CityScene3D({
         container.removeChild(renderer.domElement);
       }
     };
-  }, []);
+  }, [isFullscreen]);
 
-  // Update lighting & sky when timeOfDay changes
+  // Update lighting & sky
   useEffect(() => {
     if (!sceneRef.current) return;
     const scene = sceneRef.current;
 
-    // Remove old environment lights
     const toRemove: THREE.Object3D[] = [];
     scene.children.forEach((c) => {
       if (c.name === 'env_light') toRemove.push(c);
@@ -532,21 +518,18 @@ export function CityScene3D({
 
     switch (timeOfDay) {
       case 'vice_sunset':
-        // Vibrant Miami Sunset (Clear, high-contrast, iconic GTA 6)
         skyColor = 0x3d1c38;
         groundColor = 0x141018;
         sunColor = 0xff9944;
         sunIntensity = 2.6;
         break;
       case 'neon_night':
-        // Midnight Cyberpunk
         skyColor = 0x07111a;
         groundColor = 0x05090e;
         sunColor = 0x5599ff;
         sunIntensity = 1.4;
         break;
       case 'storm_rain':
-        // Wet Rain
         skyColor = 0x182026;
         groundColor = 0x0d1216;
         sunColor = 0x88aacc;
@@ -556,7 +539,6 @@ export function CityScene3D({
         break;
       case 'miami_noon':
       default:
-        // Clear tropical noon
         skyColor = 0x60a5fa;
         groundColor = 0x1e293b;
         sunColor = 0xfffaed;
@@ -566,16 +548,13 @@ export function CityScene3D({
         break;
     }
 
-    // Clean linear fog so foreground and midground buildings are 100% crystal-clear!
     scene.fog = new THREE.Fog(skyColor, fogNear, fogFar);
     scene.background = new THREE.Color(skyColor);
 
-    // Hemisphere Ambient Light
     const hemi = new THREE.HemisphereLight(skyColor, groundColor, 1.4);
     hemi.name = 'env_light';
     scene.add(hemi);
 
-    // Key Directional Sunlight
     const sun = new THREE.DirectionalLight(sunColor, sunIntensity);
     sun.name = 'env_light';
     sun.position.set(160, 280, 140);
@@ -592,46 +571,78 @@ export function CityScene3D({
     scene.add(sun);
   }, [timeOfDay]);
 
-  // When selectedBuilding changes: trigger dramatic GTA 6 cinematic camera framing
+  // PROPER, BEAUTIFUL CINEMATIC CAMERA FRAMING FOR SELECTED BUILDING
   useEffect(() => {
     if (!selectedBuilding || !cameraRef.current || !controlsRef.current) return;
 
     const b = selectedBuilding;
-    const distance = Math.max(75, b.height * 0.72);
+    // Calculate generous distance so the ENTIRE tower, base, rooftop helipad, billboard and skyward beacon fit on screen
+    const distance = Math.max(130, b.height * 1.35);
+    const elevation = b.height * 0.75 + 25;
 
-    // Close-up hero angle looking up at the illuminated skyscraper
+    // In fullscreen mode, offset target slightly left so the building isn't hidden behind the right drawer!
+    const offsetX = isFullscreen ? -18 : 0;
+
     targetCamPos.current = new THREE.Vector3(
-      b.x + distance * 0.72,
-      b.height * 0.55 + 20,
-      b.z + distance * 0.72
+      b.x + distance * 0.75,
+      elevation,
+      b.z + distance * 0.75
     );
-    targetCamLookAt.current = new THREE.Vector3(b.x, b.height * 0.5, b.z);
-  }, [selectedBuilding]);
+    // Point at 42% height so base and pinnacle are framed with breathing room
+    targetCamLookAt.current = new THREE.Vector3(b.x + offsetX, b.height * 0.42, b.z);
+  }, [selectedBuilding, isFullscreen]);
 
   // Camera presets
   useEffect(() => {
     if (!cameraRef.current || !controlsRef.current) return;
     const focusX = selectedBuilding?.x || 0;
     const focusZ = selectedBuilding?.z || 0;
-    const focusH = selectedBuilding ? selectedBuilding.height * 0.5 : 40;
+    const focusH = selectedBuilding ? selectedBuilding.height : 90;
 
     switch (cameraMode) {
       case 'birds_eye':
-        targetCamPos.current = new THREE.Vector3(focusX, 380, focusZ + 30);
+        targetCamPos.current = new THREE.Vector3(focusX, focusH * 2.2 + 240, focusZ + 35);
         targetCamLookAt.current = new THREE.Vector3(focusX, 0, focusZ);
         break;
       case 'street_view':
-        targetCamPos.current = new THREE.Vector3(focusX + 35, 8, focusZ + 35);
-        targetCamLookAt.current = new THREE.Vector3(focusX, focusH, focusZ);
+        targetCamPos.current = new THREE.Vector3(focusX + 45, 6, focusZ + 45);
+        targetCamLookAt.current = new THREE.Vector3(focusX, focusH * 0.7, focusZ);
         break;
       case 'cinematic_orbit':
       case 'free_orbit':
-      default:
-        targetCamPos.current = new THREE.Vector3(focusX + 130, 120, focusZ + 130);
-        targetCamLookAt.current = new THREE.Vector3(focusX, focusH, focusZ);
+      default: {
+        const d = Math.max(130, focusH * 1.35);
+        const elev = focusH * 0.75 + 25;
+        targetCamPos.current = new THREE.Vector3(focusX + d * 0.75, elev, focusZ + d * 0.75);
+        targetCamLookAt.current = new THREE.Vector3(focusX, focusH * 0.42, focusZ);
         break;
+      }
     }
   }, [cameraMode]);
+
+  // User-friendly zoom controls
+  const handleZoomIn = () => {
+    if (!cameraRef.current || !controlsRef.current) return;
+    const cam = cameraRef.current;
+    const target = controlsRef.current.target;
+    cam.position.lerp(target, 0.25);
+  };
+
+  const handleZoomOut = () => {
+    if (!cameraRef.current || !controlsRef.current) return;
+    const cam = cameraRef.current;
+    const target = controlsRef.current.target;
+    const dir = new THREE.Vector3().subVectors(cam.position, target).normalize();
+    cam.position.addScaledVector(dir, 45);
+  };
+
+  const handleRecenter = () => {
+    if (!selectedBuilding) return;
+    const b = selectedBuilding;
+    const distance = Math.max(130, b.height * 1.35);
+    targetCamPos.current = new THREE.Vector3(b.x + distance * 0.75, b.height * 0.75 + 25, b.z + distance * 0.75);
+    targetCamLookAt.current = new THREE.Vector3(b.x, b.height * 0.42, b.z);
+  };
 
   return (
     <div className={`city-3d-wrapper ${isFullscreen ? 'fullscreen' : ''}`} ref={mountRef}>
@@ -680,6 +691,21 @@ export function CityScene3D({
           <span>{hoveredBuilding.resident ? `@${hoveredBuilding.resident.username} • ${hoveredBuilding.address}` : hoveredBuilding.address}</span>
         </div>
       )}
+
+      {/* On-Screen Camera Navigation Controls (User-friendly + / - / Recenter) */}
+      <div className="camera-nav-controls">
+        <button onClick={handleZoomIn} title="Zoom In" aria-label="Zoom In">
+          <Plus size={16} />
+        </button>
+        <button onClick={handleZoomOut} title="Zoom Out" aria-label="Zoom Out">
+          <Minus size={16} />
+        </button>
+        {selectedBuilding && (
+          <button onClick={handleRecenter} title="Re-center on building" aria-label="Re-center">
+            <Crosshair size={16} />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

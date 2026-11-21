@@ -53,6 +53,17 @@ export function CityMapModal({
   const [cameraAngle, setCameraAngle] = useState(0);
   const [cinematicBars, setCinematicBars] = useState(false);
 
+  // Lock body scroll while 3D map modal is open
+  React.useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleAudioToggle = () => {
