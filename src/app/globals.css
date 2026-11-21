@@ -1106,6 +1106,42 @@ footer {
   color: var(--lime);
 }
 
+.drawer-address {
+  font: 10px var(--mono);
+  color: #8c989c;
+  margin-top: 3px;
+}
+
+.key-projects-wrapper {
+  margin: 14px 0;
+  padding: 10px 12px;
+  background: #11171b;
+  border: 1px solid #28353c;
+}
+
+.key-projects-label {
+  display: block;
+  font: 700 8px var(--mono);
+  letter-spacing: 1.2px;
+  color: var(--lime);
+  margin-bottom: 6px;
+}
+
+.key-projects-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-pill {
+  background: #1b242a;
+  border: 1px solid #33434c;
+  color: #cce7ee;
+  padding: 3px 8px;
+  font: 10px var(--mono);
+  border-radius: 2px;
+}
+
 .drawer-close {
   background: none;
   border: 0;

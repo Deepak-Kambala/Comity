@@ -24,7 +24,7 @@ import { CityScene3D } from './CityScene3D';
 import { GtaRadar } from './GtaRadar';
 import { CityBuildingData, TimeOfDay, CameraMode } from '../lib/types';
 import { urbanAudio } from '../lib/audioAmbiance';
-import { FAMOUS_DEVELOPERS } from '../lib/cityGenerator';
+import { FAMOUS_DEVELOPERS, FACTUAL_CITY_ENTITIES } from '../lib/cityGenerator';
 
 interface CityMapModalProps {
   isOpen: boolean;
@@ -222,7 +222,7 @@ export function CityMapModal({
             <Sparkles size={13} /> QUICK FLY TO:
           </span>
           <div className="devs-bar-list">
-            {FAMOUS_DEVELOPERS.map((dev) => (
+            {FACTUAL_CITY_ENTITIES.slice(0, 8).map((dev) => (
               <button
                 key={dev.username}
                 className={`dev-chip ${selectedBuilding?.resident?.username === dev.username ? 'active' : ''}`}
@@ -248,22 +248,27 @@ export function CityMapModal({
       {selectedBuilding && (
         <aside className="building-detail-drawer">
           <div className="drawer-header">
-            <span className="drawer-kicker">DISTRICT WAYPOINT • {selectedBuilding.district.toUpperCase()}</span>
-            <button className="drawer-close" onClick={() => onSelectBuilding(null)}>
+            <div>
+              <span className="drawer-kicker">{selectedBuilding.district.toUpperCase()} • {selectedBuilding.category.toUpperCase()}</span>
+              <div className="drawer-address">{selectedBuilding.address}</div>
+            </div>
+            <button className="drawer-close" onClick={() => onSelectBuilding(null as any)}>
               <X size={15} />
             </button>
           </div>
 
-          {selectedBuilding.resident ? (
-            <div className="drawer-content">
-              <div className="drawer-profile-top">
+          <div className="drawer-content">
+            <div className="drawer-profile-top">
+              {selectedBuilding.resident && (
                 <img
                   src={selectedBuilding.resident.avatarUrl}
                   alt=""
                   className="drawer-avatar"
                 />
-                <div className="drawer-profile-text">
-                  <h3>{selectedBuilding.resident.displayName}</h3>
+              )}
+              <div className="drawer-profile-text">
+                <h3>{selectedBuilding.buildingName}</h3>
+                {selectedBuilding.resident && (
                   <a
                     href={`https://github.com/${selectedBuilding.resident.username}`}
                     target="_blank"
@@ -272,13 +277,27 @@ export function CityMapModal({
                   >
                     @{selectedBuilding.resident.username} <ExternalLink size={12} />
                   </a>
+                )}
+              </div>
+            </div>
+
+            {selectedBuilding.resident?.bio && (
+              <p className="drawer-bio">{selectedBuilding.resident.bio}</p>
+            )}
+
+            {/* Key Project Badges */}
+            {selectedBuilding.resident?.keyProjects && selectedBuilding.resident.keyProjects.length > 0 && (
+              <div className="key-projects-wrapper">
+                <span className="key-projects-label">KEY ARCHITECTURES</span>
+                <div className="key-projects-list">
+                  {selectedBuilding.resident.keyProjects.map((p) => (
+                    <span key={p} className="project-pill">{p}</span>
+                  ))}
                 </div>
               </div>
+            )}
 
-              {selectedBuilding.resident.bio && (
-                <p className="drawer-bio">{selectedBuilding.resident.bio}</p>
-              )}
-
+            {selectedBuilding.resident && (
               <div className="drawer-metrics">
                 <div className="metric-box">
                   <Code2 size={16} className="metric-icon" />
@@ -295,44 +314,27 @@ export function CityMapModal({
                   </div>
                 </div>
               </div>
+            )}
 
-              <div className="building-specs-list">
-                <div className="spec-row">
-                  <span>Skyscraper Height</span>
-                  <b>{selectedBuilding.height} meters</b>
-                </div>
-                <div className="spec-row">
-                  <span>Floors</span>
-                  <b>{Math.floor(selectedBuilding.height / 3.5)} stories</b>
-                </div>
-                <div className="spec-row">
-                  <span>Architecture</span>
-                  <b className="capitalize">{selectedBuilding.style.replace('_', ' ')}</b>
-                </div>
-                <div className="spec-row">
-                  <span>Crown Feature</span>
-                  <b className="capitalize">{selectedBuilding.roofStyle.replace('_', ' ')}</b>
-                </div>
+            <div className="building-specs-list">
+              <div className="spec-row">
+                <span>Skyscraper Elevation</span>
+                <b>{selectedBuilding.height} meters</b>
+              </div>
+              <div className="spec-row">
+                <span>Floors</span>
+                <b>{Math.floor(selectedBuilding.height / 3.5)} stories</b>
+              </div>
+              <div className="spec-row">
+                <span>Architecture</span>
+                <b className="capitalize">{selectedBuilding.style.replace('_', ' ')}</b>
+              </div>
+              <div className="spec-row">
+                <span>Crown Feature</span>
+                <b className="capitalize">{selectedBuilding.roofStyle.replace('_', ' ')}</b>
               </div>
             </div>
-          ) : (
-            <div className="drawer-content">
-              <div className="drawer-profile-text">
-                <h3>Commercial Tower #{selectedBuilding.id.slice(-4)}</h3>
-                <p className="drawer-bio">Available prime commercial lot in {selectedBuilding.district} district.</p>
-              </div>
-              <div className="building-specs-list">
-                <div className="spec-row">
-                  <span>Height</span>
-                  <b>{selectedBuilding.height} meters</b>
-                </div>
-                <div className="spec-row">
-                  <span>Architecture</span>
-                  <b className="capitalize">{selectedBuilding.style.replace('_', ' ')}</b>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
         </aside>
       )}
     </div>

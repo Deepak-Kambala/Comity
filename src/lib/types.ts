@@ -17,6 +17,9 @@ export interface GitHubProfile {
 
 export interface CityBuildingData {
   id: string;
+  buildingName: string;
+  address: string;
+  category: 'developer' | 'foundation' | 'framework' | 'infrastructure' | 'civic';
   gridX: number;
   gridZ: number;
   x: number;
@@ -37,6 +40,10 @@ export interface CityBuildingData {
     repos: number;
     followers: number;
     bio?: string;
+    role?: string;
+    keyProjects?: string[];
+    company?: string;
+    location?: string;
   };
 }
 

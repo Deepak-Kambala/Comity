@@ -651,24 +651,19 @@ export function CityScene3D({
               <span className="hud-dist-tag">{selectedBuilding.district.toUpperCase()}</span>
             </div>
             <div className="hud-badge-body">
-              {selectedBuilding.resident ? (
-                <>
-                  <img
-                    src={selectedBuilding.resident.avatarUrl}
-                    alt=""
-                    className="hud-avatar"
-                  />
-                  <div>
-                    <div className="hud-title">{selectedBuilding.resident.displayName}</div>
-                    <div className="hud-sub">@{selectedBuilding.resident.username}</div>
-                  </div>
-                </>
-              ) : (
-                <div>
-                  <div className="hud-title">TOWER LOT #{selectedBuilding.id.slice(-4)}</div>
-                  <div className="hud-sub">{selectedBuilding.height}m • {selectedBuilding.style.replace('_', ' ')}</div>
-                </div>
+              {selectedBuilding.resident && (
+                <img
+                  src={selectedBuilding.resident.avatarUrl}
+                  alt=""
+                  className="hud-avatar"
+                />
               )}
+              <div>
+                <div className="hud-title">{selectedBuilding.buildingName}</div>
+                <div className="hud-sub">
+                  {selectedBuilding.resident ? `@${selectedBuilding.resident.username}` : selectedBuilding.address}
+                </div>
+              </div>
             </div>
             <div className="hud-badge-footer">
               <span>ELEV: {selectedBuilding.height}M</span>
@@ -681,8 +676,8 @@ export function CityScene3D({
       {/* Hover Tooltip when moving mouse over buildings */}
       {hoveredBuilding && !selectedBuilding && (
         <div className="building-hover-tooltip">
-          <b>{hoveredBuilding.resident ? hoveredBuilding.resident.displayName : `Skyscraper Lot #${hoveredBuilding.id.slice(-4)}`}</b>
-          <span>{hoveredBuilding.resident ? `@${hoveredBuilding.resident.username}` : `${hoveredBuilding.height}m Tower`}</span>
+          <b>{hoveredBuilding.buildingName}</b>
+          <span>{hoveredBuilding.resident ? `@${hoveredBuilding.resident.username} • ${hoveredBuilding.address}` : hoveredBuilding.address}</span>
         </div>
       )}
     </div>
