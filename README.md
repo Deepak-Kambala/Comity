@@ -26,6 +26,87 @@ Commit City (Comity) is a high-performance 3D procedural metropolis that maps Gi
 
 ---
 
+## Architecture Pipeline
+
+```text
+[ GitHub User / Org Telemetry ]
+           |
+           v
+[ Metric Normalization & Zoning Engine ]
+   ├── Public Repositories  -->  Elevation & Floor Count (3.5m / Story)
+   ├── Aggregate Star Count -->  Rooftop Crown Billboard & Helipad Tier
+   ├── Primary Tech Stack   -->  District Placement & Window Emissive Color
+   └── CI/CD Health Status  -->  Skyward Laser Beacon & Waypoint Beacon
+           |
+           v
+[ Procedural Texture Generation ]
+   ├── High-Contrast Asphalt & Crosswalk Canvases
+   ├── Multi-Tier Emissive Glass Matrices
+   └── Double-Sided Illuminated Rooftop Signage
+           |
+           v
+[ Three.js Direct WebGL Engine ]
+   ├── ACESFilmic Tone Mapping (Exposure: 1.15)
+   ├── Distance Linear Fog & 800-Star Celestial Dome
+   ├── Dynamic Highway Traffic with Forward Headlights & Taillights
+   └── GTA-Style Rotating Minimap HUD with Compass Orientation
+```
+
+---
+
+## City Districts
+
+The metropolis is organized into four designated engineering sectors:
+
+| District | Focus Area | Anchor Tenants | Architectural Style |
+| :--- | :--- | :--- | :--- |
+| **01. Systems & Core** | Low-level engines, operating systems, and kernel infrastructure | Linux Foundation, Rust Foundation, Go Core | Heavy monolithic obsidian towers with emerald window arrays |
+| **02. Web & Frameworks** | Modern web runtimes, rendering engines, and frontend frameworks | Vercel, Meta Open Source, Vue Core, Vite | Sleek neo-glass spires with azure illuminated crowns |
+| **03. Cloud & Platforms** | Distributed systems, container orchestrators, and edge networks | Kubernetes, Docker, CNCF, Cloudflare | Industrial grid high-rises with dual rooftop helipads |
+| **04. AI & Applied Data** | Deep learning runtimes, weights repositories, and neural tooling | Hugging Face, PyTorch, OpenAI open models | Futuristic illuminated towers with high-frequency laser beacons |
+
+---
+
+## Graphics & Performance Optimization
+
+To deliver console-grade fidelity while maintaining a strict 60 FPS budget on standard laptops and mobile devices, Commit City implements:
+
+- **Zero Forward-Light Penalty**: Skyscraper windows use canvas-generated emissive maps rather than expensive dynamic `PointLight` instances, avoiding GPU light loop degradation.
+- **Scroll Protection**: WebGL OrbitControls disables vertical wheel zoom on the landing hero canvas, allowing users to scroll the page naturally without getting trapped.
+- **Screen-Space Projection**: Skyscraper HUD cards and crowns are projected from 3D world coordinates (`Vector3.project(camera)`) into screen space with automated frustum culling.
+- **Procedural Canvas Textures**: Road grids, lane dividers, crosswalks, and window illumination matrices are rendered dynamically in-memory via HTML Canvas, eliminating external image asset requests.
+
+---
+
+## Developer Telemetry API
+
+Commit City exposes a serverless telemetry endpoint for querying developer metrics and computed building specifications:
+
+```http
+GET /api/github/:username
+```
+
+### Sample Response
+
+```json
+{
+  "username": "torvalds",
+  "name": "Linus Torvalds",
+  "avatarUrl": "https://avatars.githubusercontent.com/u/1024025?v=4",
+  "buildingName": "Kernel Systems Tower",
+  "address": "400 Linux Way, District 01",
+  "district": "systems",
+  "height": 180,
+  "floors": 51,
+  "topLanguage": "C",
+  "totalStars": 184500,
+  "ciStatus": "passing",
+  "verified": true
+}
+```
+
+---
+
 ## Features
 
 - **Photorealistic 3D Metropolis**:
