@@ -3,6 +3,20 @@
   "version": "1.0.0",
   "private": true,
   "description": "Interactive 3D metropolis that transforms GitHub contributions and profiles into living skyscrapers with real-time navigation and radar telemetry.",
+  "keywords": [
+    "threejs",
+    "nextjs",
+    "react19",
+    "webgl",
+    "github-api",
+    "data-visualization",
+    "procedural-generation",
+    "3d-city",
+    "gta-radar",
+    "interactive-skyline",
+    "developer-portfolio",
+    "commit-city"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
