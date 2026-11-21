@@ -9,6 +9,16 @@
 
 ---
 
+[![Commit City 3D Interface](./public/preview.png)](https://comity-seven.vercel.app/)
+
+---
+
+## About
+
+Commit City (Comity) is a high-performance 3D procedural metropolis that maps GitHub profiles and open-source contributions into architectural skyscrapers. Each building's elevation, architectural styling, and zoning reflect real-world developer metrics, accompanied by GTA-style minimap radar telemetry, instant skyscraper pinpointing with skyward beacons, and smooth 60 FPS WebGL navigation.
+
+---
+
 ## Live Demo
 
 - **Live Application**: [https://comity-seven.vercel.app/](https://comity-seven.vercel.app/)
