@@ -2,17 +2,16 @@
 
 > **Transform your GitHub contributions into a living, interactive 3D metropolis.**
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Deepak-Kambala/Comity)
-[![Live Demo](https://img.shields.io/badge/Vercel-Live%20Demo-black?style=for-the-badge&logo=vercel)](https://comity-seven.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-black?style=for-the-badge&logo=vercel)](https://comity-seven.vercel.app/)
 [![GitHub Stars](https://img.shields.io/github/stars/Deepak-Kambala/Comity?style=for-the-badge&color=d5f36a)](https://github.com/Deepak-Kambala/Comity)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.5-000000?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?style=for-the-badge&logo=threedotjs)](https://threejs.org/)
 
 ---
 
-## Live Deployment
+## Live Demo
 
-- **Production App**: [https://comity-seven.vercel.app/](https://comity-seven.vercel.app/)
+- **Live Application**: [https://comity-seven.vercel.app/](https://comity-seven.vercel.app/)
 - **Repository**: [https://github.com/Deepak-Kambala/Comity](https://github.com/Deepak-Kambala/Comity)
 
 ---
@@ -55,7 +54,6 @@
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Language**: [TypeScript 5](https://www.typescriptlang.org/)
 - **Styling**: Modern CSS with CSS Variables & Glassmorphism
-- **Hosting & Edge**: [Vercel](https://vercel.com/)
 
 ---
 
@@ -97,23 +95,6 @@ npm run start
 | **Re-center on Building** | Crosshair button on HUD |
 | **Toggle Day / Night** | Sun / Moon button in top bar |
 | **Inspect Skyscraper** | Click any building or radar blip |
-
----
-
-## Deploying to Vercel
-
-The project is pre-configured for one-click deployment on Vercel:
-
-1. Push your changes to GitHub.
-2. Import the repository into your [Vercel Dashboard](https://vercel.com/).
-3. Framework Preset: **Next.js**.
-4. Click **Deploy**.
-
-Alternatively, install the Vercel CLI:
-```bash
-npm i -g vercel
-vercel
-```
 
 ---
 
