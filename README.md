@@ -1,4 +1,4 @@
-# 🏙️ COMMIT CITY (Comity)
+# COMMIT CITY (Comity)
 
 > **Transform your GitHub contributions into a living, interactive 3D metropolis.**
 
@@ -10,44 +10,44 @@
 
 ---
 
-## 🌐 Live Deployment
+## Live Deployment
 
 - **Production App**: [https://comity-seven.vercel.app/](https://comity-seven.vercel.app/)
 - **Repository**: [https://github.com/Deepak-Kambala/Comity](https://github.com/Deepak-Kambala/Comity)
 
 ---
 
-## ✨ Features
+## Features
 
-- **🌆 Photorealistic 3D Metropolis**:
+- **Photorealistic 3D Metropolis**:
   - Direct WebGL rendering with `ACESFilmicToneMapping` locked at 60 FPS.
   - Realistic procedural skyscraper architectures with emissive window matrices, illuminated crown billboards, rooftop helipads, and atmospheric linear fog.
   - Expansive coastal ocean plane with night reflection and an 800-star celestial dome.
   - Real-time animated traffic system with directional headlights and taillights.
 
-- **🎯 Instant Skyscraper Highlighting**:
+- **Instant Skyscraper Highlighting**:
   - Search any GitHub username to immediately zoom into their custom building.
   - Custom skyward laser beacon and pulsating ground waypoint ring pinpoint the developer's tower.
   - Building height, floor count, and district zoning are dynamically derived from real repository count and community metrics.
 
-- **🧭 GTA-Style Minimap HUD & Navigation**:
+- **GTA-Style Minimap HUD & Navigation**:
   - Live rotating compass radar in the corner with real-time player and waypoint blips.
   - Seamless mouse orbit, two-finger swipe, arrow key (`←` / `→` / `A` / `D`), and on-screen camera controls.
   - Page scroll protection: no wheel hijacking on landing preview.
 
-- **🏛️ Factual Open Source Titans**:
+- **Factual Open Source Titans**:
   - Zero generic lot names. The skyline features factual tech foundations and open-source leaders (Linux Foundation, Meta Open Source, Vercel, Rust Foundation, Kubernetes, Vue, Vite, and more).
 
-- **🔄 Automated Live CI Telemetry**:
+- **Automated Live CI Telemetry**:
   - Serverless API route (`/api/github/[username]`) fetching real-time developer profiles, aggregate star counts, and top languages.
   - Scheduled GitHub Actions workflow (`.github/workflows/city-sync.yml`) refreshing telemetry every 6 hours.
 
-- **☀️ Real-time Time of Day**:
+- **Real-time Time of Day**:
   - Instant toggle between **Obsidian Midnight** (cyberpunk city lights) and **Miami Noon** (crisp high-noon sunlight).
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
 - **UI Library**: [React 19](https://react.dev/)
@@ -59,7 +59,7 @@
 
 ---
 
-## 🚀 Quick Start (Local Setup)
+## Quick Start (Local Setup)
 
 ### 1. Clone the repository
 ```bash
@@ -87,7 +87,7 @@ npm run start
 
 ---
 
-## 🎮 Controls
+## Controls
 
 | Action | Control |
 | :--- | :--- |
@@ -100,7 +100,7 @@ npm run start
 
 ---
 
-## 📦 Deploying to Vercel
+## Deploying to Vercel
 
 The project is pre-configured for one-click deployment on Vercel:
 
@@ -117,6 +117,6 @@ vercel
 
 ---
 
-## 📄 License
+## License
 
 MIT License © 2026 Deepak Kambala
