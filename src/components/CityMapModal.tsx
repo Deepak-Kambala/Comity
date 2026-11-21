@@ -24,14 +24,14 @@ import { CityScene3D } from './CityScene3D';
 import { GtaRadar } from './GtaRadar';
 import { CityBuildingData, TimeOfDay, CameraMode } from '../lib/types';
 import { urbanAudio } from '../lib/audioAmbiance';
-import { FAMOUS_DEVELOPERS, FACTUAL_CITY_ENTITIES } from '../lib/cityGenerator';
+import { FACTUAL_CITY_ENTITIES } from '../lib/cityGenerator';
 
 interface CityMapModalProps {
   isOpen: boolean;
   onClose: () => void;
   buildings: CityBuildingData[];
   selectedBuilding: CityBuildingData | null;
-  onSelectBuilding: (b: CityBuildingData | null) => void;
+  onSelectBuilding: (b: CityBuildingData) => void;
   onSearchUser: (username: string) => void;
   searchLoading?: boolean;
 }

@@ -11,7 +11,7 @@ import {
   Radio,
 } from 'lucide-react';
 import { CityBuildingData, GitHubProfile } from '../lib/types';
-import { generateCityGrid, synthesizeUserBuilding, FAMOUS_DEVELOPERS, DISTRICTS } from '../lib/cityGenerator';
+import { generateCityGrid, synthesizeUserBuilding, FACTUAL_CITY_ENTITIES, DISTRICTS } from '../lib/cityGenerator';
 import { CityMapModal } from '../components/CityMapModal';
 
 // Dynamically import Three.js scene to avoid SSR issues
@@ -167,7 +167,7 @@ export default function Home() {
           {/* Quick Roster Pills */}
           <div className="quick-roster">
             <span className="quick-roster-label">Popular addresses:</span>
-            {FAMOUS_DEVELOPERS.slice(0, 4).map((d) => (
+            {(FACTUAL_CITY_ENTITIES ?? []).slice(0, 4).map((d) => (
               <button
                 key={d.username}
                 type="button"
