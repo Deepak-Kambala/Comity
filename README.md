@@ -6,6 +6,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/Deepak-Kambala/Comity?style=for-the-badge&color=d5f36a)](https://github.com/Deepak-Kambala/Comity)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.5-000000?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?style=for-the-badge&logo=threedotjs)](https://threejs.org/)
+[![CI Verification](https://github.com/Deepak-Kambala/Comity/actions/workflows/city-sync.yml/badge.svg)](https://github.com/Deepak-Kambala/Comity/actions/workflows/city-sync.yml)
 
 ---
 
