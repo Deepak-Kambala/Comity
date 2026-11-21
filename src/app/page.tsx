@@ -204,7 +204,7 @@ export default function Home() {
                 setSelectedBuilding(b);
                 setMapOpen(true);
               }}
-              timeOfDay="vice_sunset"
+              timeOfDay="neon_night"
               cameraMode="cinematic_orbit"
             />
           </div>

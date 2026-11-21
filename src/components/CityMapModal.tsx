@@ -45,7 +45,7 @@ export function CityMapModal({
   onSearchUser,
   searchLoading = false,
 }: CityMapModalProps) {
-  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('vice_sunset');
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('neon_night');
   const [cameraMode, setCameraMode] = useState<CameraMode>('cinematic_orbit');
   const [audioActive, setAudioActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');

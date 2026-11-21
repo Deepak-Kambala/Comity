@@ -103,12 +103,22 @@ export function CityScene3D({
     controls.zoomSpeed = 0.6;
     controlsRef.current = controls;
 
-    // 5. Ground & Road Network with Clean Wet Sheen
-    const asphaltTex = createAsphaltTexture();
-    asphaltTex.repeat.set(1, 14);
+    // 5. Expansive Coastal Ocean & Ground Network
+    const oceanGeo = new THREE.PlaneGeometry(6000, 6000);
+    const oceanMat = new THREE.MeshStandardMaterial({
+      color: 0x050b12,
+      roughness: 0.12,
+      metalness: 0.9,
+    });
+    const ocean = new THREE.Mesh(oceanGeo, oceanMat);
+    ocean.rotation.x = -Math.PI / 2;
+    ocean.position.y = -0.4;
+    ocean.receiveShadow = true;
+    scene.add(ocean);
 
+    // City Island Ground
     const groundMat = new THREE.MeshStandardMaterial({
-      color: 0x14181b,
+      color: 0x11161a,
       roughness: 0.88,
       metalness: 0.1,
     });
@@ -117,7 +127,31 @@ export function CityScene3D({
     ground.receiveShadow = true;
     scene.add(ground);
 
+    // Starfield in upper night sky
+    const starCount = 800;
+    const starGeo = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(starCount * 3);
+    for (let s = 0; s < starCount; s++) {
+      const radius = 1200 + Math.random() * 800;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * (Math.PI / 2.3); // upper dome
+      starPositions[s * 3] = radius * Math.sin(phi) * Math.cos(theta);
+      starPositions[s * 3 + 1] = radius * Math.cos(phi) + 100;
+      starPositions[s * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMat = new THREE.PointsMaterial({
+      color: 0xdbeafe,
+      size: 2.2,
+      transparent: true,
+      opacity: 0.85,
+    });
+    const stars = new THREE.Points(starGeo, starMat);
+    scene.add(stars);
+
     // Asphalt Roads Grid
+    const asphaltTex = createAsphaltTexture();
+    asphaltTex.repeat.set(1, 14);
     const roadMat = new THREE.MeshStandardMaterial({
       map: asphaltTex,
       roughness: 0.35,
@@ -567,34 +601,42 @@ export function CityScene3D({
     let fogFar = 1600;
 
     switch (timeOfDay) {
-      case 'vice_sunset':
-        skyColor = 0x3d1c38;
-        groundColor = 0x141018;
-        sunColor = 0xff9944;
-        sunIntensity = 2.6;
-        break;
       case 'neon_night':
-        skyColor = 0x07111a;
-        groundColor = 0x05090e;
-        sunColor = 0x5599ff;
-        sunIntensity = 1.4;
+      default:
+        // Deep Obsidian Midnight (Crystal-clear, photorealistic, zero reddish/pinkish void)
+        skyColor = 0x05080c;
+        groundColor = 0x020508;
+        sunColor = 0xbfdbfe; // Crisp silver-blue moonlight
+        sunIntensity = 1.8;
+        fogNear = 450;
+        fogFar = 2200;
+        break;
+      case 'vice_sunset':
+        // Cinematic Golden Hour (Deep navy twilight with warm amber horizon light, NO pink/red)
+        skyColor = 0x09121f;
+        groundColor = 0x050a12;
+        sunColor = 0xf59e0b; // Warm amber sunlight
+        sunIntensity = 2.5;
+        fogNear = 400;
+        fogFar = 2000;
         break;
       case 'storm_rain':
-        skyColor = 0x182026;
-        groundColor = 0x0d1216;
-        sunColor = 0x88aacc;
-        sunIntensity = 1.5;
-        fogNear = 260;
-        fogFar = 1200;
+        // Dark Coastal Rain (Wet asphalt, deep charcoal night)
+        skyColor = 0x0a0f15;
+        groundColor = 0x04070a;
+        sunColor = 0x64748b;
+        sunIntensity = 1.3;
+        fogNear = 300;
+        fogFar = 1600;
         break;
       case 'miami_noon':
-      default:
-        skyColor = 0x60a5fa;
+        // Bright Coastal Daylight
+        skyColor = 0x38bdf8;
         groundColor = 0x1e293b;
         sunColor = 0xfffaed;
-        sunIntensity = 3.2;
+        sunIntensity = 3.0;
         fogNear = 500;
-        fogFar = 2200;
+        fogFar = 2400;
         break;
     }
 
