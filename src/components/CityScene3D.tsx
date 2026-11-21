@@ -800,13 +800,7 @@ export function CityScene3D({
           }}
         >
           <div className="hud-pin-line" />
-          <div className="hud-badge-card">
-            <div className="hud-badge-header">
-              <span className="hud-live-tag">
-                <span className="ci-live-dot" /> CI: PASSING • ACTIONS VERIFIED
-              </span>
-              <span className="hud-dist-tag">{selectedBuilding.district.toUpperCase()}</span>
-            </div>
+          <div className="hud-badge-card minimal-card">
             <div className="hud-badge-body">
               {selectedBuilding.resident && (
                 <img
@@ -822,16 +816,9 @@ export function CityScene3D({
                 </div>
               </div>
             </div>
-            {selectedBuilding.resident && (
-              <div className="hud-badge-metrics">
-                <span>★ {selectedBuilding.resident.totalStars ? selectedBuilding.resident.totalStars.toLocaleString() : selectedBuilding.resident.followers.toLocaleString()}</span>
-                <span>{selectedBuilding.resident.repos} REPOS</span>
-                <span>{selectedBuilding.resident.topLanguage || 'TypeScript'}</span>
-              </div>
-            )}
             <div className="hud-badge-footer">
-              <span>ELEV: {selectedBuilding.height}M</span>
-              <span>FLOORS: {Math.floor(selectedBuilding.height / 3.5)}</span>
+              <span>{selectedBuilding.district.toUpperCase()}</span>
+              <span>{selectedBuilding.height}M • {Math.floor(selectedBuilding.height / 3.5)} FLOORS</span>
             </div>
           </div>
         </div>

@@ -3,28 +3,16 @@
 import React, { useState } from 'react';
 import {
   X,
-  Volume2,
-  VolumeX,
   Sun,
   Moon,
-  CloudRain,
-  Sunset,
-  Camera,
   ExternalLink,
   Code2,
   Users,
-  Building2,
   Search,
-  Sparkles,
-  Maximize2,
-  Minimize2,
-  Compass,
 } from 'lucide-react';
 import { CityScene3D } from './CityScene3D';
 import { GtaRadar } from './GtaRadar';
 import { CityBuildingData, TimeOfDay, CameraMode } from '../lib/types';
-import { urbanAudio } from '../lib/audioAmbiance';
-import { FACTUAL_CITY_ENTITIES } from '../lib/cityGenerator';
 
 interface CityMapModalProps {
   isOpen: boolean;
@@ -47,11 +35,9 @@ export function CityMapModal({
 }: CityMapModalProps) {
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('neon_night');
   const [cameraMode, setCameraMode] = useState<CameraMode>('cinematic_orbit');
-  const [audioActive, setAudioActive] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [cameraPos, setCameraPos] = useState<{ x: number; z: number }>({ x: 240, z: 320 });
   const [cameraAngle, setCameraAngle] = useState(0);
-  const [cinematicBars, setCinematicBars] = useState(false);
 
   // Lock body scroll while 3D map modal is open
   React.useEffect(() => {
@@ -66,9 +52,8 @@ export function CityMapModal({
 
   if (!isOpen) return null;
 
-  const handleAudioToggle = () => {
-    const active = urbanAudio.toggle();
-    setAudioActive(active);
+  const toggleDayNight = () => {
+    setTimeOfDay((prev) => (prev === 'neon_night' ? 'miami_noon' : 'neon_night'));
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -78,33 +63,17 @@ export function CityMapModal({
     }
   };
 
-  const currentDistrict = selectedBuilding
-    ? selectedBuilding.district.toUpperCase()
-    : 'DOWNTOWN METROPOLIS';
-
   return (
     <div className="city-map-modal-backdrop">
-      {/* Cinematic Letterboxing bars */}
-      {cinematicBars && (
-        <>
-          <div className="cinematic-bar bar-top" />
-          <div className="cinematic-bar bar-bottom" />
-        </>
-      )}
-
-      {/* Top HUD Bar */}
-      <header className="gta-hud-topbar">
-        <div className="hud-brand">
-          <div className="hud-logo-mark">CC</div>
-          <div>
-            <div className="hud-logo-title">COMMIT CITY 3D</div>
-            <div className="hud-logo-sub">DISTRICT: {currentDistrict}</div>
-          </div>
+      {/* Clean Floating Top Bar */}
+      <header className="gta-hud-topbar clean-header">
+        <div className="hud-brand clean-brand">
+          <span className="hud-logo-title">COMMIT CITY</span>
         </div>
 
-        {/* In-Map Search Input */}
-        <form className="hud-search-box" onSubmit={handleSearchSubmit}>
-          <Search size={15} className="hud-search-icon" />
+        {/* Minimal Search Input */}
+        <form className="hud-search-box clean-search" onSubmit={handleSearchSubmit}>
+          <Search size={14} className="hud-search-icon" />
           <input
             type="text"
             placeholder="Search GitHub username..."
@@ -112,90 +81,22 @@ export function CityMapModal({
             onChange={(e) => setSearchInput(e.target.value)}
           />
           <button type="submit" disabled={searchLoading}>
-            {searchLoading ? 'LOCATING...' : 'FLY TO'}
+            {searchLoading ? '...' : 'FIND'}
           </button>
         </form>
 
-        {/* Controls Toolbar */}
-        <div className="hud-actions">
-          {/* Time of Day */}
-          <div className="hud-button-group" title="Time of Day">
-            <button
-              className={timeOfDay === 'vice_sunset' ? 'active' : ''}
-              onClick={() => setTimeOfDay('vice_sunset')}
-              title="Vice Sunset"
-            >
-              <Sunset size={15} />
-            </button>
-            <button
-              className={timeOfDay === 'neon_night' ? 'active' : ''}
-              onClick={() => setTimeOfDay('neon_night')}
-              title="Neon Midnight"
-            >
-              <Moon size={15} />
-            </button>
-            <button
-              className={timeOfDay === 'storm_rain' ? 'active' : ''}
-              onClick={() => setTimeOfDay('storm_rain')}
-              title="Wet Rain"
-            >
-              <CloudRain size={15} />
-            </button>
-            <button
-              className={timeOfDay === 'miami_noon' ? 'active' : ''}
-              onClick={() => setTimeOfDay('miami_noon')}
-              title="Miami Noon"
-            >
-              <Sun size={15} />
-            </button>
-          </div>
-
-          {/* Camera Angles */}
-          <div className="hud-button-group" title="Camera Modes">
-            <button
-              className={cameraMode === 'cinematic_orbit' ? 'active' : ''}
-              onClick={() => setCameraMode('cinematic_orbit')}
-              title="Cinematic Orbit"
-            >
-              <Camera size={15} />
-            </button>
-            <button
-              className={cameraMode === 'street_view' ? 'active' : ''}
-              onClick={() => setCameraMode('street_view')}
-              title="Street Level"
-            >
-              <Building2 size={15} />
-            </button>
-            <button
-              className={cameraMode === 'birds_eye' ? 'active' : ''}
-              onClick={() => setCameraMode('birds_eye')}
-              title="Satellite View"
-            >
-              <Compass size={15} />
-            </button>
-          </div>
-
-          {/* Audio Synthesizer */}
+        {/* Minimal Right Actions */}
+        <div className="hud-actions clean-actions">
           <button
-            className={`hud-icon-btn ${audioActive ? 'active' : ''}`}
-            onClick={handleAudioToggle}
-              title={audioActive ? 'Mute City Audio' : 'Play city ambience'}
+            className="hud-icon-btn clean-btn"
+            onClick={toggleDayNight}
+            title={timeOfDay === 'neon_night' ? 'Switch to Daylight' : 'Switch to Midnight'}
           >
-            {audioActive ? <Volume2 size={17} /> : <VolumeX size={17} />}
+            {timeOfDay === 'neon_night' ? <Sun size={15} /> : <Moon size={15} />}
           </button>
 
-          {/* Cinematic Letterbox */}
-          <button
-            className={`hud-icon-btn ${cinematicBars ? 'active' : ''}`}
-            onClick={() => setCinematicBars(!cinematicBars)}
-            title="Toggle Cinematic Bars"
-          >
-            {cinematicBars ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
-          </button>
-
-          {/* Exit Modal */}
-          <button className="hud-close-btn" onClick={onClose} title="Exit 3D City">
-            <X size={18} />
+          <button className="hud-close-btn clean-close" onClick={onClose} title="Close 3D Map">
+            <X size={17} />
           </button>
         </div>
       </header>
@@ -217,8 +118,8 @@ export function CityMapModal({
         />
       </div>
 
-      {/* Bottom HUD: Radar Minimap & Telemetry */}
-      <footer className="gta-hud-bottom">
+      {/* Minimal Radar HUD in Corner */}
+      <footer className="gta-hud-bottom clean-bottom">
         <GtaRadar
           buildings={buildings}
           selectedBuilding={selectedBuilding}
@@ -226,55 +127,25 @@ export function CityMapModal({
           cameraAngle={cameraAngle}
           onSelectBuilding={onSelectBuilding}
         />
-
-        {/* Famous Developers Quick Fly-To Bar */}
-        <div className="famous-devs-bar">
-          <span className="devs-bar-label">
-            <Sparkles size={13} /> QUICK FLY TO:
-          </span>
-          <div className="devs-bar-list">
-            {FACTUAL_CITY_ENTITIES.slice(0, 8).map((dev) => (
-              <button
-                key={dev.username}
-                className={`dev-chip ${selectedBuilding?.resident?.username === dev.username ? 'active' : ''}`}
-                onClick={() => {
-                  const b = buildings.find((x) => x.resident?.username === dev.username);
-                  if (b) onSelectBuilding(b);
-                  else onSearchUser(dev.username);
-                }}
-              >
-                <img
-                  src={`https://avatars.githubusercontent.com/${dev.username}`}
-                  alt=""
-                  className="dev-chip-avatar"
-                />
-                <span>@{dev.username}</span>
-              </button>
-            ))}
-          </div>
-        </div>
       </footer>
 
-      {/* Resident Info Card Overlay */}
+      {/* Clean Slide-out Detail Drawer */}
       {selectedBuilding && (
-        <aside className="building-detail-drawer">
-          <div className="drawer-header">
-            <div>
-              <span className="drawer-kicker">{selectedBuilding.district.toUpperCase()} • {selectedBuilding.category.toUpperCase()}</span>
-              <div className="drawer-address">{selectedBuilding.address}</div>
-            </div>
+        <aside className="building-detail-drawer clean-drawer">
+          <div className="drawer-header clean-drawer-header">
+            <span className="drawer-kicker">{selectedBuilding.district.toUpperCase()}</span>
             <button className="drawer-close" onClick={() => onSelectBuilding(null as any)}>
               <X size={15} />
             </button>
           </div>
 
-          <div className="drawer-content">
+          <div className="drawer-content clean-drawer-content">
             <div className="drawer-profile-top">
               {selectedBuilding.resident && (
                 <img
                   src={selectedBuilding.resident.avatarUrl}
                   alt=""
-                  className="drawer-avatar"
+                  className="drawer-avatar clean-avatar"
                 />
               )}
               <div className="drawer-profile-text">
@@ -293,38 +164,20 @@ export function CityMapModal({
             </div>
 
             {selectedBuilding.resident?.bio && (
-              <p className="drawer-bio">{selectedBuilding.resident.bio}</p>
+              <p className="drawer-bio clean-bio">{selectedBuilding.resident.bio}</p>
             )}
-
-            {/* Key Project Badges */}
-            {selectedBuilding.resident?.keyProjects && selectedBuilding.resident.keyProjects.length > 0 && (
-              <div className="key-projects-wrapper">
-                <span className="key-projects-label">KEY ARCHITECTURES</span>
-                <div className="key-projects-list">
-                  {selectedBuilding.resident.keyProjects.map((p) => (
-                    <span key={p} className="project-pill">{p}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Live DevOps & Telemetry Status */}
-            <div className="drawer-ci-badge">
-              <span className="ci-live-dot" />
-              <span>GITHUB ACTIONS: PASSING • LIVE METRICS VERIFIED</span>
-            </div>
 
             {selectedBuilding.resident && (
-              <div className="drawer-metrics">
+              <div className="drawer-metrics clean-metrics">
                 <div className="metric-box">
-                  <Code2 size={16} className="metric-icon" />
+                  <Code2 size={15} className="metric-icon" />
                   <div>
                     <span className="metric-value">{selectedBuilding.resident.repos}</span>
                     <span className="metric-label">Repositories</span>
                   </div>
                 </div>
                 <div className="metric-box">
-                  <Users size={16} className="metric-icon" />
+                  <Users size={15} className="metric-icon" />
                   <div>
                     <span className="metric-value">{selectedBuilding.resident.followers.toLocaleString()}</span>
                     <span className="metric-label">Followers</span>
@@ -333,22 +186,14 @@ export function CityMapModal({
               </div>
             )}
 
-            <div className="building-specs-list">
+            <div className="building-specs-list clean-specs">
               <div className="spec-row">
-                <span>Skyscraper Elevation</span>
-                <b>{selectedBuilding.height} meters</b>
+                <span>Elevation</span>
+                <b>{selectedBuilding.height}m</b>
               </div>
               <div className="spec-row">
                 <span>Floors</span>
                 <b>{Math.floor(selectedBuilding.height / 3.5)} stories</b>
-              </div>
-              <div className="spec-row">
-                <span>Architecture</span>
-                <b className="capitalize">{selectedBuilding.style.replace('_', ' ')}</b>
-              </div>
-              <div className="spec-row">
-                <span>Crown Feature</span>
-                <b className="capitalize">{selectedBuilding.roofStyle.replace('_', ' ')}</b>
               </div>
             </div>
           </div>
