@@ -3,7 +3,7 @@
 > **Transform your GitHub contributions into a living, interactive 3D metropolis.**
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Deepak-Kambala/Comity)
-[![Live Demo](https://img.shields.io/badge/Vercel-Live%20Demo-black?style=for-the-badge&logo=vercel)](https://comity.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Vercel-Live%20Demo-black?style=for-the-badge&logo=vercel)](https://comity-seven.vercel.app/)
 [![GitHub Stars](https://img.shields.io/github/stars/Deepak-Kambala/Comity?style=for-the-badge&color=d5f36a)](https://github.com/Deepak-Kambala/Comity)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.5-000000?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?style=for-the-badge&logo=threedotjs)](https://threejs.org/)
@@ -12,8 +12,7 @@
 
 ## 🌐 Live Deployment
 
-- **Production App**: [https://comity.vercel.app](https://comity.vercel.app)
-- **Alternative Mirror**: [https://commit-city.vercel.app](https://commit-city.vercel.app)
+- **Production App**: [https://comity-seven.vercel.app/](https://comity-seven.vercel.app/)
 - **Repository**: [https://github.com/Deepak-Kambala/Comity](https://github.com/Deepak-Kambala/Comity)
 
 ---
