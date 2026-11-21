@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { Plus, Minus, Crosshair } from 'lucide-react';
+import { Plus, Minus, Crosshair, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CityBuildingData, TimeOfDay, CameraMode } from '../lib/types';
 import {
   createAsphaltTexture,
@@ -93,7 +93,12 @@ export function CityScene3D({
     controls.maxDistance = 800;
     controls.target.set(0, 45, 0);
 
-    // CRITICAL: Disable wheel zoom on the landing page preview to prevent scroll hijacking!
+    // Allow panning with right-click or two-finger drag
+    controls.enablePan = true;
+    controls.panSpeed = 1.0;
+    controls.screenSpacePanning = true;
+
+    // CRITICAL: Disable wheel zoom on landing page preview to prevent vertical scroll hijacking!
     controls.enableZoom = isFullscreen;
     controls.zoomSpeed = 0.6;
     controlsRef.current = controls;
@@ -386,6 +391,49 @@ export function CityScene3D({
       }
     };
 
+    // Left / Right Scroll & Trackpad horizontal swipe orbit
+    const handleWheel = (e: WheelEvent) => {
+      // If horizontal scrolling is detected (e.g. 2-finger trackpad swipe left/right or Shift+wheel)
+      if (Math.abs(e.deltaX) > 1.2) {
+        const cam = cameraRef.current;
+        const ctrl = controlsRef.current;
+        if (cam && ctrl) {
+          const angle = e.deltaX * 0.0035;
+          const offset = new THREE.Vector3().subVectors(cam.position, ctrl.target);
+          offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), angle);
+          cam.position.copy(ctrl.target).add(offset);
+          cam.lookAt(ctrl.target);
+          ctrl.update();
+        }
+      }
+    };
+    container.addEventListener('wheel', handleWheel, { passive: true });
+
+    // Keyboard ArrowLeft / ArrowRight navigation
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      const cam = cameraRef.current;
+      const ctrl = controlsRef.current;
+      if (!cam || !ctrl) return;
+
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        const offset = new THREE.Vector3().subVectors(cam.position, ctrl.target);
+        offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.08);
+        cam.position.copy(ctrl.target).add(offset);
+        cam.lookAt(ctrl.target);
+        ctrl.update();
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        const offset = new THREE.Vector3().subVectors(cam.position, ctrl.target);
+        offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.08);
+        cam.position.copy(ctrl.target).add(offset);
+        cam.lookAt(ctrl.target);
+        ctrl.update();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
     container.addEventListener('mousemove', handlePointerMove);
     container.addEventListener('click', handleClick);
 
@@ -488,6 +536,8 @@ export function CityScene3D({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener('wheel', handleWheel);
       container.removeEventListener('mousemove', handlePointerMove);
       container.removeEventListener('click', handleClick);
       controls.dispose();
@@ -644,6 +694,28 @@ export function CityScene3D({
     targetCamLookAt.current = new THREE.Vector3(b.x, b.height * 0.42, b.z);
   };
 
+  const handleOrbitLeft = () => {
+    if (!cameraRef.current || !controlsRef.current) return;
+    const cam = cameraRef.current;
+    const ctrl = controlsRef.current;
+    const offset = new THREE.Vector3().subVectors(cam.position, ctrl.target);
+    offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.2);
+    cam.position.copy(ctrl.target).add(offset);
+    cam.lookAt(ctrl.target);
+    ctrl.update();
+  };
+
+  const handleOrbitRight = () => {
+    if (!cameraRef.current || !controlsRef.current) return;
+    const cam = cameraRef.current;
+    const ctrl = controlsRef.current;
+    const offset = new THREE.Vector3().subVectors(cam.position, ctrl.target);
+    offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.2);
+    cam.position.copy(ctrl.target).add(offset);
+    cam.lookAt(ctrl.target);
+    ctrl.update();
+  };
+
   return (
     <div className={`city-3d-wrapper ${isFullscreen ? 'fullscreen' : ''}`} ref={mountRef}>
       {/* 3D Floating Tag for Highlighted Resident */}
@@ -692,13 +764,19 @@ export function CityScene3D({
         </div>
       )}
 
-      {/* On-Screen Camera Navigation Controls (User-friendly + / - / Recenter) */}
+      {/* On-Screen Camera Navigation Controls (User-friendly + / - / Rotate / Recenter) */}
       <div className="camera-nav-controls">
         <button onClick={handleZoomIn} title="Zoom In" aria-label="Zoom In">
           <Plus size={16} />
         </button>
         <button onClick={handleZoomOut} title="Zoom Out" aria-label="Zoom Out">
           <Minus size={16} />
+        </button>
+        <button onClick={handleOrbitLeft} title="Orbit Left (or swipe left / ←)" aria-label="Orbit Left">
+          <ChevronLeft size={16} />
+        </button>
+        <button onClick={handleOrbitRight} title="Orbit Right (or swipe right / →)" aria-label="Orbit Right">
+          <ChevronRight size={16} />
         </button>
         {selectedBuilding && (
           <button onClick={handleRecenter} title="Re-center on building" aria-label="Re-center">
